@@ -10,4 +10,12 @@ wss.on('connection', function connection(ws) {
   });
 
   ws.send('something');
+
+  let iteration = 0;
+  setInterval(function () {
+    const newCoordinates = `${iteration * 10}, ${iteration * 10}`;
+    ws.send(newCoordinates);
+    console.log('newCoordinates: ' + newCoordinates);
+    iteration++;
+  }, 2000);
 });

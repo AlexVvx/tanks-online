@@ -118,6 +118,14 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 
   return newRequire;
 })({"scripts/main.js":[function(require,module,exports) {
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -127,19 +135,6 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var serverUrl = 'ws://fast-cove-62764.herokuapp.com';
 var devServerUrl = 'ws://127.0.0.1:5000';
 var ws = new WebSocket(devServerUrl);
-
-ws.onopen = function open() {
-  ws.send('tanks data initial');
-  runTanks();
-};
-
-ws.onmessage = function incoming(event) {
-  console.log(event.data);
-};
-
-function runTanks() {
-  ws.send('move tank');
-}
 
 var Tank =
 /*#__PURE__*/
@@ -179,9 +174,21 @@ function () {
 }();
 
 var myTank = new Tank(50, 70, 50, 50);
-setTimeout(function () {
-  return myTank.move(100, 100);
-}, 2000);
+
+ws.onopen = function open() {
+  ws.send('tanks data initial');
+};
+
+ws.onmessage = function incoming(event) {
+  console.log(event.data);
+
+  var _event$data$split = event.data.split(','),
+      _event$data$split2 = _slicedToArray(_event$data$split, 2),
+      x = _event$data$split2[0],
+      y = _event$data$split2[1];
+
+  myTank.move(x, y);
+};
 },{}],"../node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -210,7 +217,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62261" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49756" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

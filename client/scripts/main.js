@@ -1,23 +1,6 @@
-
-
 const serverUrl = 'ws://fast-cove-62764.herokuapp.com';
 const devServerUrl = 'ws://127.0.0.1:5000';
 const ws = new WebSocket(devServerUrl);
-
-ws.onopen = function open() {
-    ws.send('tanks data initial');
-    runTanks();
-};
-
-ws.onmessage = function incoming(event) {
-    console.log(event.data);
-};
-
-
-function runTanks() {
-    ws.send('move tank');
-}
-
 
 class Tank {
     constructor(width, height, beginX, beginY) {
@@ -30,7 +13,7 @@ class Tank {
         canvasEl.height = this.canvasElHeight;
         this.ctx = canvasEl.getContext('2d');
         this.ctx.strokeStyle = 'red';
-        this.draw(beginX, beginY);     
+        this.draw(beginX, beginY);
     }
 
     draw(beginX, beginY) {
@@ -49,4 +32,13 @@ class Tank {
 }
 
 const myTank = new Tank(50, 70, 50, 50);
-setTimeout(() => myTank.move(100, 100), 2000);
+
+ws.onopen = function open() {
+    ws.send('tanks data initial');
+};
+
+ws.onmessage = function incoming(event) {
+    console.log(event.data);
+    const [x, y] = event.data.split(',');
+    myTank.move(x, y);
+};
