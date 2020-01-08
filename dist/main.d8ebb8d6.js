@@ -119,7 +119,8 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   return newRequire;
 })({"scripts/main.js":[function(require,module,exports) {
 var serverUrl = 'ws://fast-cove-62764.herokuapp.com';
-var ws = new WebSocket(serverUrl);
+var devServerUrl = 'ws://127.0.0.1:5000';
+var ws = new WebSocket(devServerUrl);
 
 ws.onopen = function open() {
   ws.send('tanks data initial');
@@ -131,6 +132,7 @@ ws.onmessage = function incoming(event) {
 };
 
 function runTanks() {
+  var canvasEl = document.querySelector('#canvas');
   ws.send('move tank');
 }
 },{}],"../node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {

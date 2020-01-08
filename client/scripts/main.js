@@ -1,5 +1,6 @@
 const serverUrl = 'ws://fast-cove-62764.herokuapp.com';
-const ws = new WebSocket(serverUrl);
+const devServerUrl = 'ws://127.0.0.1:5000';
+const ws = new WebSocket(devServerUrl);
 
 ws.onopen = function open() {
     ws.send('tanks data initial');
@@ -12,5 +13,6 @@ ws.onmessage = function incoming(event) {
 
 
 function runTanks() {
+    const canvasEl = document.querySelector('#canvas');
     ws.send('move tank');
 }
