@@ -117,72 +117,79 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"scripts/main.js":[function(require,module,exports) {
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+})({"../node_modules/parcel/src/builtins/bundle-url.js":[function(require,module,exports) {
+var bundleURL = null;
 
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-var serverUrl = 'ws://fast-cove-62764.herokuapp.com';
-var devServerUrl = 'ws://127.0.0.1:5000';
-var ws = new WebSocket(devServerUrl);
-
-ws.onopen = function open() {
-  ws.send('tanks data initial');
-  runTanks();
-};
-
-ws.onmessage = function incoming(event) {
-  console.log(event.data);
-};
-
-function runTanks() {
-  ws.send('move tank');
-}
-
-var Tank =
-/*#__PURE__*/
-function () {
-  function Tank(width, height, beginX, beginY) {
-    _classCallCheck(this, Tank);
-
-    this.width = width;
-    this.height = height;
-    var canvasEl = document.querySelector('#canvas');
-    this.canvasElWidth = 1000;
-    this.canvasElHeight = 600;
-    canvasEl.width = this.canvasElWidth;
-    canvasEl.height = this.canvasElHeight;
-    this.ctx = canvasEl.getContext('2d');
-    this.ctx.strokeStyle = 'red';
-    this.draw(beginX, beginY);
+function getBundleURLCached() {
+  if (!bundleURL) {
+    bundleURL = getBundleURL();
   }
 
-  _createClass(Tank, [{
-    key: "draw",
-    value: function draw(beginX, beginY) {
-      var duloWidth = 10;
-      var duloLength = duloWidth * 4;
-      this.ctx.strokeRect(beginX, beginY, this.width, this.height);
-      this.ctx.strokeRect(beginX + this.width / 2 - duloWidth / 2, beginY + this.height, duloWidth, duloLength);
-    }
-  }, {
-    key: "move",
-    value: function move(x, y) {
-      this.ctx.clearRect(0, 0, this.canvasElWidth, this.canvasElHeight);
-      this.draw(x, y);
-    }
-  }]);
+  return bundleURL;
+}
 
-  return Tank;
-}();
+function getBundleURL() {
+  // Attempt to find the URL of the current script and use that as the base URL
+  try {
+    throw new Error();
+  } catch (err) {
+    var matches = ('' + err.stack).match(/(https?|file|ftp|chrome-extension|moz-extension):\/\/[^)\n]+/g);
 
-var myTank = new Tank(50, 70, 50, 50);
-setTimeout(function () {
-  return myTank.move(100, 100);
-}, 2000);
-},{}],"../node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+    if (matches) {
+      return getBaseURL(matches[0]);
+    }
+  }
+
+  return '/';
+}
+
+function getBaseURL(url) {
+  return ('' + url).replace(/^((?:https?|file|ftp|chrome-extension|moz-extension):\/\/.+)\/[^/]+$/, '$1') + '/';
+}
+
+exports.getBundleURL = getBundleURLCached;
+exports.getBaseURL = getBaseURL;
+},{}],"../node_modules/parcel/src/builtins/css-loader.js":[function(require,module,exports) {
+var bundle = require('./bundle-url');
+
+function updateLink(link) {
+  var newLink = link.cloneNode();
+
+  newLink.onload = function () {
+    link.remove();
+  };
+
+  newLink.href = link.href.split('?')[0] + '?' + Date.now();
+  link.parentNode.insertBefore(newLink, link.nextSibling);
+}
+
+var cssTimeout = null;
+
+function reloadCSS() {
+  if (cssTimeout) {
+    return;
+  }
+
+  cssTimeout = setTimeout(function () {
+    var links = document.querySelectorAll('link[rel="stylesheet"]');
+
+    for (var i = 0; i < links.length; i++) {
+      if (bundle.getBaseURL(links[i].href) === bundle.getBundleURL()) {
+        updateLink(links[i]);
+      }
+    }
+
+    cssTimeout = null;
+  }, 50);
+}
+
+module.exports = reloadCSS;
+},{"./bundle-url":"../node_modules/parcel/src/builtins/bundle-url.js"}],"styles/main.css":[function(require,module,exports) {
+var reloadCSS = require('_css_loader');
+
+module.hot.dispose(reloadCSS);
+module.hot.accept(reloadCSS);
+},{"_css_loader":"../node_modules/parcel/src/builtins/css-loader.js"}],"../node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -386,5 +393,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../node_modules/parcel/src/builtins/hmr-runtime.js","scripts/main.js"], null)
-//# sourceMappingURL=/main.d8ebb8d6.js.map
+},{}]},{},["../node_modules/parcel/src/builtins/hmr-runtime.js"], null)
+//# sourceMappingURL=/main.d2070829.js.map
