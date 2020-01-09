@@ -135,13 +135,16 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var serverUrl = 'ws://fast-cove-62764.herokuapp.com';
 var devServerUrl = 'ws://127.0.0.1:5000';
 var ws = new WebSocket(devServerUrl);
+var tankMovementOffset = 5;
+var myTank;
 
 var Tank =
 /*#__PURE__*/
 function () {
-  function Tank(width, height, beginX, beginY) {
+  function Tank(name, width, height, beginX, beginY) {
     _classCallCheck(this, Tank);
 
+    this.name = name;
     this.width = width;
     this.height = height;
     var canvasEl = document.querySelector('#canvas');
@@ -166,6 +169,8 @@ function () {
     key: "move",
     value: function move(x, y) {
       this.ctx.clearRect(0, 0, this.canvasElWidth, this.canvasElHeight);
+      this.x = x;
+      this.y = y;
       this.draw(x, y);
     }
   }]);
@@ -173,22 +178,54 @@ function () {
   return Tank;
 }();
 
-var myTank = new Tank(50, 70, 50, 50);
-
-ws.onopen = function open() {
-  ws.send('tanks data initial');
+ws.onopen = function open() {// ws.send('tanks data initial');
 };
 
 ws.onmessage = function incoming(event) {
-  console.log(event.data);
+  if (/^player/.test(event.data)) {
+    myTank = new Tank(event.data, 50, 70, 50, 50);
+    return;
+  }
 
-  var _event$data$split = event.data.split(','),
-      _event$data$split2 = _slicedToArray(_event$data$split, 2),
-      x = _event$data$split2[0],
-      y = _event$data$split2[1];
+  var x, y;
 
-  myTank.move(x, y);
+  try {
+    var players = JSON.parse(event.data);
+
+    var _players$myTank$name = _slicedToArray(players[myTank.name], 2);
+
+    x = _players$myTank$name[0];
+    y = _players$myTank$name[1];
+    //TODO: draw other tanks
+    myTank.move(+x, +y);
+  } catch (e) {
+    console.error('wrong data format received');
+  }
 };
+
+document.addEventListener('keypress', function (event) {
+  switch (event.keyCode) {
+    case 97:
+      ws.send([myTank.x - tankMovementOffset, myTank.y]);
+      break;
+    // left
+
+    case 119:
+      ws.send([myTank.x, myTank.y - tankMovementOffset]);
+      break;
+    // up
+
+    case 100:
+      ws.send([myTank.x + tankMovementOffset, myTank.y]);
+      break;
+    // right
+
+    case 115:
+      ws.send([myTank.x, myTank.y + tankMovementOffset]);
+      break;
+    // down
+  }
+});
 },{}],"../node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -217,7 +254,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49756" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55298" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

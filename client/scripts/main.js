@@ -1,9 +1,12 @@
 const serverUrl = 'ws://fast-cove-62764.herokuapp.com';
 const devServerUrl = 'ws://127.0.0.1:5000';
 const ws = new WebSocket(devServerUrl);
+const tankMovementOffset = 5;
+let myTank;
 
 class Tank {
-    constructor(width, height, beginX, beginY) {
+    constructor(name, width, height, beginX, beginY) {
+        this.name = name;
         this.width = width;
         this.height = height;
         const canvasEl = document.querySelector('#canvas');
@@ -26,19 +29,39 @@ class Tank {
 
     move(x, y) {
         this.ctx.clearRect(0, 0, this.canvasElWidth, this.canvasElHeight);
+        this.x = x;
+        this.y = y;
         this.draw(x, y);
     }
-
 }
 
-const myTank = new Tank(50, 70, 50, 50);
-
 ws.onopen = function open() {
-    ws.send('tanks data initial');
+    // ws.send('tanks data initial');
 };
 
 ws.onmessage = function incoming(event) {
-    console.log(event.data);
-    const [x, y] = event.data.split(',');
-    myTank.move(x, y);
+    if (/^player/.test(event.data)) {
+        myTank = new Tank(event.data, 50, 70, 50, 50);
+        return;
+    }
+
+    let x, y;
+    try {
+        const players = JSON.parse(event.data);
+        [x, y] = players[myTank.name];
+        //TODO: draw other tanks
+        myTank.move(+x, +y);
+    }
+    catch (e) {
+        console.error('wrong data format received');
+    }
 };
+
+document.addEventListener('keypress', (event) => {
+    switch (event.keyCode) {
+        case 97: ws.send([myTank.x - tankMovementOffset, myTank.y]); break;  // left
+        case 119: ws.send([myTank.x, myTank.y - tankMovementOffset]); break;  // up
+        case 100: ws.send([myTank.x + tankMovementOffset, myTank.y]); break;  // right
+        case 115: ws.send([myTank.x, myTank.y + tankMovementOffset]); break;  // down
+    }
+});
