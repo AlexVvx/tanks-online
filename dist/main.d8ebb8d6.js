@@ -160,10 +160,16 @@ function () {
   _createClass(Tank, [{
     key: "draw",
     value: function draw(beginX, beginY) {
-      var duloWidth = 10;
-      var duloLength = duloWidth * 4;
-      this.ctx.strokeRect(beginX, beginY, this.width, this.height);
-      this.ctx.strokeRect(beginX + this.width / 2 - duloWidth / 2, beginY + this.height, duloWidth, duloLength);
+      // const duloWidth = 10;
+      // const duloLength = duloWidth * 4
+      // this.ctx.strokeRect(beginX, beginY, this.width, this.height);
+      // this.ctx.strokeRect(beginX + (this.width / 2) - duloWidth / 2,
+      //     beginY + this.height, duloWidth, duloLength);
+      var tank = document.createElement('img');
+      tank.style.width = this.width;
+      tank.style.height = this.height;
+      tank.src = './client/assets/img/tankYellow.png';
+      this.ctx.drawImage(tank, 200, 200);
     }
   }, {
     key: "move",
@@ -254,7 +260,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55298" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50821" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

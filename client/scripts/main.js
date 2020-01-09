@@ -20,11 +20,17 @@ class Tank {
     }
 
     draw(beginX, beginY) {
-        const duloWidth = 10;
-        const duloLength = duloWidth * 4
-        this.ctx.strokeRect(beginX, beginY, this.width, this.height);
-        this.ctx.strokeRect(beginX + (this.width / 2) - duloWidth / 2,
-            beginY + this.height, duloWidth, duloLength);
+        // const duloWidth = 10;
+        // const duloLength = duloWidth * 4
+        // this.ctx.strokeRect(beginX, beginY, this.width, this.height);
+        // this.ctx.strokeRect(beginX + (this.width / 2) - duloWidth / 2,
+        //     beginY + this.height, duloWidth, duloLength);
+        const tank = document.createElement('img');
+        tank.style.width = this.width;
+        tank.style.height = this.height;
+        tank.src = './client/assets/img/tankYellow.png';
+        this.ctx.drawImage(tank, 200, 200);
+
     }
 
     move(x, y) {
