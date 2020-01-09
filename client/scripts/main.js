@@ -15,7 +15,6 @@ class Tank {
         canvasEl.width = this.canvasElWidth;
         canvasEl.height = this.canvasElHeight;
         this.ctx = canvasEl.getContext('2d');
-        this.ctx.strokeStyle = 'red';
         this.draw(beginX, beginY);
     }
 
@@ -25,12 +24,9 @@ class Tank {
         // this.ctx.strokeRect(beginX, beginY, this.width, this.height);
         // this.ctx.strokeRect(beginX + (this.width / 2) - duloWidth / 2,
         //     beginY + this.height, duloWidth, duloLength);
-        const tank = document.createElement('img');
-        tank.style.width = this.width;
-        tank.style.height = this.height;
-        tank.src = './client/assets/img/tankYellow.png';
-        this.ctx.drawImage(tank, 200, 200);
-
+        const tank = new Image();
+        tank.src = 'tankYellow.ab212710.png';
+        this.ctx.drawImage(tank, beginX, beginY, this.width, this.height);
     }
 
     move(x, y) {
@@ -47,7 +43,7 @@ ws.onopen = function open() {
 
 ws.onmessage = function incoming(event) {
     if (/^player/.test(event.data)) {
-        myTank = new Tank(event.data, 50, 70, 50, 50);
+        myTank = new Tank(event.data, 50, 50, 0, 0);
         return;
     }
 
@@ -71,3 +67,5 @@ document.addEventListener('keypress', (event) => {
         case 115: ws.send([myTank.x, myTank.y + tankMovementOffset]); break;  // down
     }
 });
+ //some troubles:
+ // when reload the page in browser, the tank moves (like x position += 10, y position -= 10)

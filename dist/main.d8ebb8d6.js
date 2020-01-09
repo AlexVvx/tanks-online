@@ -153,7 +153,6 @@ function () {
     canvasEl.width = this.canvasElWidth;
     canvasEl.height = this.canvasElHeight;
     this.ctx = canvasEl.getContext('2d');
-    this.ctx.strokeStyle = 'red';
     this.draw(beginX, beginY);
   }
 
@@ -165,11 +164,9 @@ function () {
       // this.ctx.strokeRect(beginX, beginY, this.width, this.height);
       // this.ctx.strokeRect(beginX + (this.width / 2) - duloWidth / 2,
       //     beginY + this.height, duloWidth, duloLength);
-      var tank = document.createElement('img');
-      tank.style.width = this.width;
-      tank.style.height = this.height;
-      tank.src = './client/assets/img/tankYellow.png';
-      this.ctx.drawImage(tank, 200, 200);
+      var tank = new Image();
+      tank.src = 'tankYellow.ab212710.png';
+      this.ctx.drawImage(tank, beginX, beginY, this.width, this.height);
     }
   }, {
     key: "move",
@@ -189,7 +186,7 @@ ws.onopen = function open() {// ws.send('tanks data initial');
 
 ws.onmessage = function incoming(event) {
   if (/^player/.test(event.data)) {
-    myTank = new Tank(event.data, 50, 70, 50, 50);
+    myTank = new Tank(event.data, 50, 50, 0, 0);
     return;
   }
 
@@ -231,7 +228,8 @@ document.addEventListener('keypress', function (event) {
       break;
     // down
   }
-});
+}); //some troubles:
+// when reload the page in browser, the tank moves (like x position += 10, y position -= 10)
 },{}],"../node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -260,7 +258,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50821" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60098" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
